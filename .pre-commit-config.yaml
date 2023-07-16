@@ -6,6 +6,10 @@ repos:
     -   id: debug-statements
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
+-   repo: https://github.com/mxr/sync-pre-commit-deps
+    rev: v0.0.1
+    hooks:
+    -   id: sync-pre-commit-deps
 -   repo: https://github.com/asottile/setup-cfg-fmt
     rev: v2.4.0
     hooks:
