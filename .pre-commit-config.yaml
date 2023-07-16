@@ -3,8 +3,11 @@ repos:
     rev: v4.4.0
     hooks:
     -   id: check-docstring-first
+    -   id: check-yaml
     -   id: debug-statements
     -   id: end-of-file-fixer
+    -   id: name-tests-test
+    -   id: requirements-txt-fixer
     -   id: trailing-whitespace
 -   repo: https://github.com/mxr/sync-pre-commit-deps
     rev: v0.0.1
