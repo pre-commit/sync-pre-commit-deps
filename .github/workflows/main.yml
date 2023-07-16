@@ -1,0 +1,18 @@
+name: main
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  main:
+    uses: asottile/workflows/.github/workflows/tox.yml@v1.5.0
+    with:
+      env: '["py38", "py39", "py310", "py311", "py312", "py313", "pypy3"]'
+  main-win:
+    uses: asottile/workflows/.github/workflows/tox.yml@v1.5.0
+    with:
+      env: '["py38"]'
+      os: windows-latest
+      arch: '["x64", "x86"]'
