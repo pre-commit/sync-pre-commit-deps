@@ -2,17 +2,13 @@ repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
-    -   id: check-docstring-first
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: debug-statements
-    -   id: end-of-file-fixer
+    -   id: double-quote-string-fixer
     -   id: name-tests-test
     -   id: requirements-txt-fixer
-    -   id: trailing-whitespace
--   repo: https://github.com/mxr/sync-pre-commit-deps
-    rev: v0.0.1
-    hooks:
-    -   id: sync-pre-commit-deps
 -   repo: https://github.com/asottile/setup-cfg-fmt
     rev: v2.4.0
     hooks:
@@ -23,44 +19,23 @@ repos:
     hooks:
     -   id: reorder-python-imports
         args: [--py38-plus, --add-import, 'from __future__ import annotations']
+-   repo: https://github.com/asottile/add-trailing-comma
+    rev: v3.0.1
+    hooks:
+    -   id: add-trailing-comma
 -   repo: https://github.com/asottile/pyupgrade
     rev: v3.10.1
     hooks:
     -   id: pyupgrade
         args: [--py38-plus]
--   repo: https://github.com/hakancelikdev/unimport
-    rev: 1.0.0
+-   repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v2.0.2
     hooks:
-    -   id: unimport
--   repo: https://github.com/mxr/unkey
-    rev: v0.0.1
-    hooks:
-    -   id: unkey
--   repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-    -   id: black
+    -   id: autopep8
 -   repo: https://github.com/PyCQA/flake8
     rev: 6.1.0
     hooks:
     -   id: flake8
-        additional_dependencies:
-        -   flake8-bugbear==23.7.10
-        -   flake8-builtins==2.1.0
-        -   flake8-comprehensions==3.14.0
-        -   flake8-typing-imports==1.14.0
-        -   flake8_simplify==0.20.0
--   repo: https://github.com/asottile/yesqa
-    rev: v1.5.0
-    hooks:
-    -   id: yesqa
-        additional_dependencies:
-        -   flake8==6.1.0
-        -   flake8-bugbear==23.7.10
-        -   flake8-builtins==2.1.0
-        -   flake8-comprehensions==3.14.0
-        -   flake8-typing-imports==1.14.0
-        -   flake8_simplify==0.20.0
 -   repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.5.1
     hooks:
