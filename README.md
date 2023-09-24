@@ -19,7 +19,7 @@ Sample `.pre-commit-config.yaml`:
   - repo: https://github.com/mxr/sync-pre-commit-deps
     rev: v0.0.1
     hooks:
-    -   id: sync-pre-commit-deps
+      - id: sync-pre-commit-deps
 ```
 
 ## cli
@@ -37,12 +37,12 @@ Ensures tools which declare `flake8` and `black` as additional dependencies will
    - repo: https://github.com/PyCQA/flake8
      rev: 6.0.0
      hooks:
-     -   id: flake8
+       - id: flake8
    - repo: https://github.com/asottile/yesqa
      rev: v1.5.0
      hooks:
-     -   id: yesqa
+       - id: yesqa
          additional_dependencies:
--        -   flake8==5.0.0
-+        -   flake8==6.0.0
+-        - flake8==5.0.0
++        - flake8==6.0.0
 ```
