@@ -16,7 +16,7 @@ See [pre-commit](https://github.com/pre-commit/pre-commit) for instructions
 Sample `.pre-commit-config.yaml`:
 
 ```yaml
--   repo: https://github.com/mxr/sync-pre-commit-deps
+  - repo: https://github.com/mxr/sync-pre-commit-deps
     rev: v0.0.1
     hooks:
     -   id: sync-pre-commit-deps
@@ -34,11 +34,11 @@ Ensures tools which declare `flake8` and `black` as additional dependencies will
 
 ```diff
  repos:
- -   repo: https://github.com/PyCQA/flake8
+   - repo: https://github.com/PyCQA/flake8
      rev: 6.0.0
      hooks:
      -   id: flake8
- -   repo: https://github.com/asottile/yesqa
+   - repo: https://github.com/asottile/yesqa
      rev: v1.5.0
      hooks:
      -   id: yesqa
