@@ -8,18 +8,44 @@ import ruamel.yaml
 SUPPORTED = frozenset(('black', 'flake8'))
 
 
+_ARGUMENT_HELP_TEMPLATE = (
+    'The `{}` argument to the YAML dumper. '
+    'See https://yaml.readthedocs.io/en/latest/detail/'
+    '#indentation-of-block-sequences'
+)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', default='.pre-commit-config.yaml')
+    parser.add_argument(
+        'filename', default='.pre-commit-config.yaml',
+        help='The pre-commit config file to sync to.',
+    )
+
+    # defaults below match pre-commit config as documented
+    # TODO - support round-tripping
+    parser.add_argument(
+        '--yaml-mapping', type=int, default=4,
+        help=_ARGUMENT_HELP_TEMPLATE.format('mapping'),
+    )
+    parser.add_argument(
+        '--yaml-sequence', type=int, default=4,
+        help=_ARGUMENT_HELP_TEMPLATE.format('sequence'),
+    )
+    parser.add_argument(
+        '--yaml-offset', type=int, default=0,
+        help=_ARGUMENT_HELP_TEMPLATE.format('offset'),
+    )
 
     args = parser.parse_args(argv)
     filename: str = args.filename
+    yaml_mapping: int = args.yaml_mapping
+    yaml_sequence: int = args.yaml_sequence
+    yaml_offset: int = args.yaml_offset
 
-    # match pre-commit config as documented
-    # TODO - support round-tripping
     yaml = ruamel.yaml.YAML()
     yaml.preserve_quotes = True
-    yaml.indent(mapping=4, sequence=4)
+    yaml.indent(yaml_mapping, yaml_sequence, yaml_offset)
 
     with open(filename) as f:
         loaded = yaml.load(f)
