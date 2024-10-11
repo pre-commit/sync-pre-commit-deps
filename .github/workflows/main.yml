@@ -7,12 +7,11 @@ on:
 
 jobs:
   main:
-    uses: asottile/workflows/.github/workflows/tox.yml@v1.6.0
+    uses: asottile/workflows/.github/workflows/tox.yml@v1.7.0
     with:
-      env: '["py38", "py39", "py310", "py311", "py312", "py313", "pypy3"]'
+      env: '["py39", "py310", "py311", "py312", "py313", "py314", "pypy3"]'
   main-win:
-    uses: asottile/workflows/.github/workflows/tox.yml@v1.6.0
+    uses: asottile/workflows/.github/workflows/tox.yml@v1.7.0
     with:
-      env: '["py38"]'
+      env: '["py39"]'
       os: windows-latest
-      arch: '["x64", "x86"]'
