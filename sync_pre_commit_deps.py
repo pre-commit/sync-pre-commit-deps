@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import re
 from collections.abc import Sequence
 
 import ruamel.yaml
 
-SUPPORTED = frozenset(('black', 'flake8'))
+SUPPORTED = frozenset(('black', 'flake8', 'mypy'))
 
 
 _ARGUMENT_HELP_TEMPLATE = (
@@ -55,7 +56,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     for repo in loaded['repos']:
         for hook in repo['hooks']:
             if (hid := hook['id']) in SUPPORTED:
-                versions[hid] = repo['rev']
+                if hook_rev := re.match(r'[vV]?(?P<rev>[.\d]+)$', repo['rev']):
+                    versions[hid] = hook_rev.group('rev')
 
     updated = []
     for repo in loaded['repos']:
