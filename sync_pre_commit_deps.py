@@ -56,8 +56,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     for repo in loaded['repos']:
         for hook in repo['hooks']:
             if (hid := hook['id']) in SUPPORTED:
-                if hook_rev := re.match(r'[vV]?(?P<rev>[.\d]+)$', repo['rev']):
-                    versions[hid] = hook_rev.group('rev')
+                hook_rev = re.match(r'[vV]?(?P<rev>.+)$', repo['rev'])
+                # assert for mypy
+                assert hook_rev is not None, f'Invalid rev {repo["rev"]!r}'
+                versions[hid] = hook_rev.group('rev')
 
     updated = []
     for repo in loaded['repos']:
