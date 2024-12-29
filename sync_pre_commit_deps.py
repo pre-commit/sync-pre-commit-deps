@@ -5,7 +5,7 @@ from collections.abc import Sequence
 
 import ruamel.yaml
 
-SUPPORTED = frozenset(('black', 'flake8'))
+SUPPORTED = frozenset(('black', 'flake8', 'mypy'))
 
 
 _ARGUMENT_HELP_TEMPLATE = (
@@ -55,7 +55,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     for repo in loaded['repos']:
         for hook in repo['hooks']:
             if (hid := hook['id']) in SUPPORTED:
-                versions[hid] = repo['rev']
+                # `mirrors-mypy` uses versions with a 'v' prefix, so we have to
+                # strip it out to get the mypy version.
+                cleaned_rev = repo['rev'].removeprefix('v')
+                versions[hid] = cleaned_rev
 
     updated = []
     for repo in loaded['repos']:

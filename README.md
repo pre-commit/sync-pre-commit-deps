@@ -30,7 +30,7 @@ $ sync-pre-commit-deps path/to/.pre-commit-config.yaml
 
 ## what it does
 
-Ensures tools which declare `flake8` and `black` as additional dependencies will have those versions synced with the `flake8` and `black` versions in the rest of the config. For example, `flake8` under `yesqa` is updated from `5.0.0` to `6.0.0`.
+Ensures tools which declare `flake8`, `black`, or `mypy` as additional dependencies will have those versions synced with the `flake8`, `black`, or `mypy` versions in the rest of the config. For example, `flake8` under `yesqa` is updated from `5.0.0` to `6.0.0`.
 
 ```diff
  repos:
