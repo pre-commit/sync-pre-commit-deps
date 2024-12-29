@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import re
 from collections.abc import Sequence
 
 import ruamel.yaml
@@ -56,10 +55,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     for repo in loaded['repos']:
         for hook in repo['hooks']:
             if (hid := hook['id']) in SUPPORTED:
-                hook_rev = re.match(r'[vV]?(?P<rev>.+)$', repo['rev'])
-                # assert for mypy
-                assert hook_rev is not None, f'Invalid rev {repo["rev"]!r}'
-                versions[hid] = hook_rev.group('rev')
+                # `mirrors-mypy` uses versions with a 'v' prefix, so we have to
+                # strip it out to get the mypy version.
+                cleaned_rev = repo['rev'].removeprefix('v')
+                versions[hid] = cleaned_rev
 
     updated = []
     for repo in loaded['repos']:
