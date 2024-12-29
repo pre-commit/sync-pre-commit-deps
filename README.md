@@ -17,7 +17,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
 -   repo: https://github.com/mxr/sync-pre-commit-deps
-    rev: v0.0.1
+    rev: v0.0.2
     hooks:
     -   id: sync-pre-commit-deps
 ```
