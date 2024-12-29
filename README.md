@@ -16,7 +16,7 @@ See [pre-commit](https://github.com/pre-commit/pre-commit) for instructions
 Sample `.pre-commit-config.yaml`:
 
 ```yaml
--   repo: https://github.com/mxr/sync-pre-commit-deps
+-   repo: https://github.com/pre-commit/sync-pre-commit-deps
     rev: v0.0.2
     hooks:
     -   id: sync-pre-commit-deps
