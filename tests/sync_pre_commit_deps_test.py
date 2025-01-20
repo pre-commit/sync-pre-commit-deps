@@ -1,22 +1,43 @@
 from __future__ import annotations
 
+import pytest
+
 from sync_pre_commit_deps import main
 
 
-def test_main_noop(tmpdir):
-    s = (
-        'repos:\n'
-        '-   repo: https://github.com/psf/black\n'
-        '    rev: 23.3.0\n'
-        '    hooks:\n'
-        '    -   id: black\n'
-        '-   repo: https://github.com/adamchainz/blacken-docs\n'
-        '    rev: 1.15.0\n'
-        '    hooks:\n'
-        '    -   id: blacken-docs\n'
-        '        additional_dependencies:\n'
-        '        -   black==23.3.0\n'
-    )
+@pytest.mark.parametrize(
+    ('s',),
+    (
+        pytest.param(
+            'repos:\n'
+            '-   repo: https://github.com/psf/black\n'
+            '    rev: 23.3.0\n'
+            '    hooks:\n'
+            '    -   id: black\n'
+            '-   repo: https://github.com/adamchainz/blacken-docs\n'
+            '    rev: 1.15.0\n'
+            '    hooks:\n'
+            '    -   id: blacken-docs\n'
+            '        additional_dependencies:\n'
+            '        -   black==23.3.0\n',
+            id='already correct version',
+        ),
+        pytest.param(
+            'repos:\n'
+            '-   repo: local\n'
+            '    hooks:\n'
+            '    -   id: mypy\n'
+            '-   repo: https://github.com/nbQA-dev/nbQA\n'
+            '    rev: 1.9.1\n'
+            '    hooks:\n'
+            '    -   id: nbqa-mypy\n'
+            '        additional_dependencies:\n'
+            '        -   mypy==0.123\n',
+            id='local hook shadows supported lib',
+        ),
+    ),
+)
+def test_main_noop(tmpdir, s):
     cfg = tmpdir.join('.pre-commit-config.yaml')
     cfg.write(s)
 
