@@ -5,6 +5,7 @@ from collections.abc import Sequence
 
 import ruamel.yaml
 
+REPOS_WITHOUT_REV = frozenset(('local', 'meta'))
 SUPPORTED = frozenset(('black', 'flake8', 'mypy'))
 
 
@@ -53,12 +54,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     # TODO - validate schema?
     versions = {}
     for repo in loaded['repos']:
-        for hook in repo['hooks']:
-            if (hid := hook['id']) in SUPPORTED:
-                # `mirrors-mypy` uses versions with a 'v' prefix, so we have to
-                # strip it out to get the mypy version.
-                cleaned_rev = repo['rev'].removeprefix('v')
-                versions[hid] = cleaned_rev
+        if repo['repo'] not in REPOS_WITHOUT_REV:
+            for hook in repo['hooks']:
+                if (hid := hook['id']) in SUPPORTED:
+                    # `mirrors-mypy` uses versions with a 'v' prefix, so we
+                    # have to strip it out to get the mypy version.
+                    cleaned_rev = repo['rev'].removeprefix('v')
+                    versions[hid] = cleaned_rev
 
     updated = []
     for repo in loaded['repos']:
