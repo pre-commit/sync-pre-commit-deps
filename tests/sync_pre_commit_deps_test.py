@@ -35,15 +35,25 @@ from sync_pre_commit_deps import main
             '        -   mypy==0.123\n',
             id='local hook shadows supported lib',
         ),
+        pytest.param(
+            'repos:\n'
+            '-   repo: https://github.com/psf/black\n'
+            '    rev: 23.3.0\n'
+            '    hooks:\n'
+            '    -   name: \N{SNOWMAN} black\n'
+            '        id: black\n',
+            id='unicode no-op',
+        ),
     ),
 )
 def test_main_noop(tmpdir, s):
     cfg = tmpdir.join('.pre-commit-config.yaml')
-    cfg.write(s)
+    cfg.write_binary(s.encode())
 
     assert not main((str(cfg),))
 
-    assert cfg.read() == s
+    with open(cfg, encoding='utf-8') as f:
+        assert f.read() == s
 
 
 def test_main_writes_all(tmpdir):
