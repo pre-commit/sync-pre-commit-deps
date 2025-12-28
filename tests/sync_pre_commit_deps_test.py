@@ -24,6 +24,26 @@ from sync_pre_commit_deps import main
         ),
         pytest.param(
             'repos:\n'
+            '-   repo: https://github.com/adamchainz/blacken-docs\n'
+            '    rev: 1.15.0\n'
+            '    hooks:\n'
+            '    -   id: blacken-docs\n'
+            '        additional_dependencies:\n'
+            '        -   black==23.3.0\n',
+            id='no hook to get the version from',
+        ),
+        pytest.param(
+            'repos:\n'
+            '-   repo: https://github.com/PyCQA/flake8\n'
+            '    rev: 6.0.0\n'
+            '    hooks:\n'
+            '    -   id: flake8\n'
+            '        additional_dependencies:\n'
+            '        -   flake-bugbear==3.1.0\n',
+            id='dep not supported',
+        ),
+        pytest.param(
+            'repos:\n'
             '-   repo: local\n'
             '    hooks:\n'
             '    -   id: mypy\n'
