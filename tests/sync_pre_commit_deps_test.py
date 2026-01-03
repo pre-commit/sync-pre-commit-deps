@@ -24,6 +24,20 @@ from sync_pre_commit_deps import main
         ),
         pytest.param(
             'repos:\n'
+            '-   repo: https://github.com/psf/black\n'
+            '    rev: 23.3.0\n'
+            '    hooks:\n'
+            '    -   id: black\n'
+            '-   repo: https://github.com/adamchainz/blacken-docs\n'
+            '    rev: 1.15.0\n'
+            '    hooks:\n'
+            '    -   id: blacken-docs\n'
+            '        additional_dependencies:\n'
+            '        -   black>=22.3.0\n',
+            id='sep not supported',
+        ),
+        pytest.param(
+            'repos:\n'
             '-   repo: https://github.com/adamchainz/blacken-docs\n'
             '    rev: 1.15.0\n'
             '    hooks:\n'
@@ -64,6 +78,14 @@ from sync_pre_commit_deps import main
             '        id: black\n',
             id='unicode no-op',
         ),
+        pytest.param(
+            'repos:\n'
+            '-   repo: https://github.com/pre-commit/mirrors-eslint\n'
+            '    rev: v8.39.0\n'
+            '    hooks:\n'
+            '    -   id: eslint\n',
+            id='does not have eslint in additional_dependencies',
+        ),
     ),
 )
 def test_main_noop(tmpdir, s):
@@ -100,6 +122,14 @@ def test_main_writes_all(tmpdir):
         '    rev: v1.13.0\n'
         '    hooks:\n'
         '    -   id: mypy\n'
+        # gives the `eslint` version and also has its
+        # additional_dependencies rewritten
+        '-   repo: https://github.com/pre-commit/mirrors-eslint\n'
+        '    rev: v8.39.0\n'
+        '    hooks:\n'
+        '    -   id: eslint\n'
+        '        additional_dependencies:\n'
+        '        -   eslint@8.38.0\n'
         # all repos below should have their additional_dependencies rewritten
         '-   repo: https://github.com/asottile/yesqa\n'
         '    rev: v1.5.0\n'
@@ -149,6 +179,12 @@ def test_main_writes_all(tmpdir):
         '    rev: v1.13.0\n'
         '    hooks:\n'
         '    -   id: mypy\n'
+        '-   repo: https://github.com/pre-commit/mirrors-eslint\n'
+        '    rev: v8.39.0\n'
+        '    hooks:\n'
+        '    -   id: eslint\n'
+        '        additional_dependencies:\n'
+        '        -   eslint@8.39.0\n'
         '-   repo: https://github.com/asottile/yesqa\n'
         '    rev: v1.5.0\n'
         '    hooks:\n'

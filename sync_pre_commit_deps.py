@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import argparse
+import re
 from collections.abc import Sequence
 
 import ruamel.yaml
 
-SUPPORTED = frozenset(('black', 'flake8', 'mypy'))
+SUPPORTED = frozenset({
+    'black', 'flake8', 'mypy', 'eslint',  'csslint', 'fixmyjs', 'jshint',
+    'prettier',
+})
 
+_SEPS = ('==', '@')
+_RE_SEP = re.compile(rf'^(.+)({"|".join(_SEPS)})(.+)$')
 
 _ARGUMENT_HELP_TEMPLATE = (
     'The `{}` argument to the YAML dumper. '
@@ -56,8 +62,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         if repo['repo'] not in ('local', 'meta'):
             for hook in repo['hooks']:
                 if (hid := hook['id']) in SUPPORTED:
-                    # `mirrors-mypy` uses versions with a 'v' prefix, so we
-                    # have to strip it out to get the mypy version.
+                    # `mirrors-mypy` and various node revs have a 'v' prefix,
+                    # so we have to strip that out to get the
+                    # additional_dependency version.
                     cleaned_rev = repo['rev'].removeprefix('v')
                     versions[hid] = cleaned_rev
 
@@ -65,12 +72,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     for repo in loaded['repos']:
         for hook in repo['hooks']:
             for i, dep in enumerate(hook.get('additional_dependencies', ())):
-                name, _, cur_version = dep.partition('==')
-                target_version = versions.get(name, cur_version)
-                if target_version != cur_version:
-                    name_and_version = f'{name}=={target_version}'
-                    hook['additional_dependencies'][i] = name_and_version
-                    updated.append((hook['id'], name))
+                if match := _RE_SEP.match(dep):
+                    name, sep, cur_version = match.groups()
+                    target_version = versions.get(name, cur_version)
+                    if target_version != cur_version:
+                        updated_dep = f'{name}{sep}{target_version}'
+                        hook['additional_dependencies'][i] = updated_dep
+                        updated.append((hook['id'], name))
 
     if updated:
         print(f'Writing updates to {filename}:')
