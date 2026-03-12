@@ -10,6 +10,9 @@ SUPPORTED = frozenset({
     'black', 'flake8', 'mypy', 'eslint',  'csslint', 'fixmyjs', 'jshint',
     'prettier',
 })
+SYNCED_DEPENDENCIES = {
+    '@eslint/js': 'eslint',
+}
 
 _SEPS = ('==', '@')
 _RE_SEP = re.compile(rf'^(.+)({"|".join(_SEPS)})(.+)$')
@@ -74,16 +77,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             for i, dep in enumerate(hook.get('additional_dependencies', ())):
                 if match := _RE_SEP.match(dep):
                     name, sep, cur_version = match.groups()
-                    target_version = versions.get(name, cur_version)
+                    target_version = versions.get(
+                        SYNCED_DEPENDENCIES.get(name, name), cur_version,
+                    )
                     if target_version != cur_version:
                         updated_dep = f'{name}{sep}{target_version}'
                         hook['additional_dependencies'][i] = updated_dep
-                        updated.append((hook['id'], name))
+                        updated.append((hook['id'], dep, updated_dep))
 
     if updated:
         print(f'Writing updates to {filename}:')
-        for hid, name in updated:
-            print(f'\tSetting {hid!r} dependency {name!r} to {versions[name]}')
+        for hid, old_dep, updated_dep in updated:
+            print(
+                f'\tSetting {hid!r} dependency {old_dep!r} to {updated_dep!r}',
+            )
 
         with open(filename, 'w+') as f:
             yaml.dump(loaded, f)

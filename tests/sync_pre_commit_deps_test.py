@@ -98,7 +98,7 @@ def test_main_noop(tmpdir, s):
         assert f.read() == s
 
 
-def test_main_writes_all(tmpdir):
+def test_main_writes_all(tmpdir, capsys):
     cfg = tmpdir.join('.pre-commit-config.yaml')
     cfg.write(
         'repos:\n'
@@ -130,6 +130,7 @@ def test_main_writes_all(tmpdir):
         '    -   id: eslint\n'
         '        additional_dependencies:\n'
         '        -   eslint@8.38.0\n'
+        '        -   "@eslint/js==8.38.0"\n'
         # all repos below should have their additional_dependencies rewritten
         '-   repo: https://github.com/asottile/yesqa\n'
         '    rev: v1.5.0\n'
@@ -185,6 +186,7 @@ def test_main_writes_all(tmpdir):
         '    -   id: eslint\n'
         '        additional_dependencies:\n'
         '        -   eslint@8.39.0\n'
+        '        -   "@eslint/js==8.39.0"\n'
         '-   repo: https://github.com/asottile/yesqa\n'
         '    rev: v1.5.0\n'
         '    hooks:\n'
@@ -212,6 +214,10 @@ def test_main_writes_all(tmpdir):
         '        -   flake8==6.0.0\n'
         '        -   mypy==1.13.0\n'
     )
+
+    out = capsys.readouterr().out
+    assert "'eslint@8.38.0' to 'eslint@8.39.0'" in out
+    assert "'@eslint/js==8.38.0' to '@eslint/js==8.39.0'" in out
 
 
 def test_main_no_dep_on_one_and_writes_other(tmpdir):
