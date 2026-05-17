@@ -130,6 +130,14 @@ def test_main_writes_all(tmpdir):
         '    -   id: eslint\n'
         '        additional_dependencies:\n'
         '        -   eslint@8.38.0\n'
+        # gives the `@biomejs/biome` version and also has its
+        # additional_dependencies rewritten
+        '-   repo: https://github.com/biomejs/pre-commit\n'
+        '    rev: v2.4.15\n'
+        '    hooks:\n'
+        '    -   id: biome-check\n'
+        '        additional_dependencies:\n'
+        '        -   "@biomejs/biome@1.8.1"\n'
         # all repos below should have their additional_dependencies rewritten
         '-   repo: https://github.com/asottile/yesqa\n'
         '    rev: v1.5.0\n'
@@ -185,6 +193,12 @@ def test_main_writes_all(tmpdir):
         '    -   id: eslint\n'
         '        additional_dependencies:\n'
         '        -   eslint@8.39.0\n'
+        '-   repo: https://github.com/biomejs/pre-commit\n'
+        '    rev: v2.4.15\n'
+        '    hooks:\n'
+        '    -   id: biome-check\n'
+        '        additional_dependencies:\n'
+        '        -   "@biomejs/biome@2.4.15"\n'
         '-   repo: https://github.com/asottile/yesqa\n'
         '    rev: v1.5.0\n'
         '    hooks:\n'

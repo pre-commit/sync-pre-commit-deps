@@ -6,10 +6,17 @@ from collections.abc import Sequence
 
 import ruamel.yaml
 
-SUPPORTED = frozenset({
-    'black', 'flake8', 'mypy', 'eslint',  'csslint', 'fixmyjs', 'jshint',
-    'prettier',
-})
+SUPPORTED = {
+    'black': 'black',
+    'flake8': 'flake8',
+    'mypy': 'mypy',
+    'eslint': 'eslint',
+    'csslint': 'csslint',
+    'fixmyjs': 'fixmyjs',
+    'jshint': 'jshint',
+    'prettier': 'prettier',
+    'biome-check': '@biomejs/biome',
+}
 
 _SEPS = ('==', '@')
 _RE_SEP = re.compile(rf'^(.+)({"|".join(_SEPS)})(.+)$')
@@ -61,12 +68,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     for repo in loaded['repos']:
         if repo['repo'] not in ('local', 'meta'):
             for hook in repo['hooks']:
-                if (hid := hook['id']) in SUPPORTED:
+                if (dep := SUPPORTED.get(hook['id'])) is not None:
                     # `mirrors-mypy` and various node revs have a 'v' prefix,
                     # so we have to strip that out to get the
                     # additional_dependency version.
                     cleaned_rev = repo['rev'].removeprefix('v')
-                    versions[hid] = cleaned_rev
+                    versions[dep] = cleaned_rev
 
     updated = []
     for repo in loaded['repos']:
