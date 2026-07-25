@@ -228,6 +228,37 @@ def test_main_writes_all(tmpdir):
     )
 
 
+def test_main_frozen_rev_uses_tag_not_sha(tmpdir):
+    cfg = tmpdir.join('.pre-commit-config.yaml')
+    cfg.write(
+        'repos:\n'
+        '-   repo: https://github.com/biomejs/pre-commit\n'
+        '    rev: 5bb716344fd6979d991634e7ece88f407e599ee0  # frozen: v2.5.4\n'
+        '    hooks:\n'
+        '    -   id: biome-check\n'
+        '-   repo: local\n'
+        '    hooks:\n'
+        '    -   id: biome-migrate\n'
+        '        additional_dependencies:\n'
+        '        -   "@biomejs/biome@2.4.15"\n',
+    )
+
+    assert main((str(cfg),))
+
+    assert cfg.read() == (
+        'repos:\n'
+        '-   repo: https://github.com/biomejs/pre-commit\n'
+        '    rev: 5bb716344fd6979d991634e7ece88f407e599ee0  # frozen: v2.5.4\n'
+        '    hooks:\n'
+        '    -   id: biome-check\n'
+        '-   repo: local\n'
+        '    hooks:\n'
+        '    -   id: biome-migrate\n'
+        '        additional_dependencies:\n'
+        '        -   "@biomejs/biome@2.5.4"\n'
+    )
+
+
 def test_main_no_dep_on_one_and_writes_other(tmpdir):
     cfg = tmpdir.join('.pre-commit-config.yaml')
     cfg.write(

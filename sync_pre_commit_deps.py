@@ -20,6 +20,23 @@ SUPPORTED = {
 
 _SEPS = ('==', '@')
 _RE_SEP = re.compile(rf'^(.+)({"|".join(_SEPS)})(.+)$')
+_RE_FROZEN = re.compile(r'#\s*frozen:\s*(\S+)')
+
+
+def _version(repo: ruamel.yaml.comments.CommentedMap) -> str:
+    tokens = repo.ca.items.get('rev') or ()
+    for token in tokens:
+        if token and (match := _RE_FROZEN.search(token.value)):
+            rev = match.group(1)
+            break
+    else:
+        rev = repo['rev']
+
+    # `mirrors-mypy` and various node revs have a 'v' prefix,
+    # so we have to strip that out to get the
+    # additional_dependency version.
+    return rev.removeprefix('v')
+
 
 _ARGUMENT_HELP_TEMPLATE = (
     'The `{}` argument to the YAML dumper. '
@@ -69,11 +86,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if repo['repo'] not in ('local', 'meta'):
             for hook in repo['hooks']:
                 if (dep := SUPPORTED.get(hook['id'])) is not None:
-                    # `mirrors-mypy` and various node revs have a 'v' prefix,
-                    # so we have to strip that out to get the
-                    # additional_dependency version.
-                    cleaned_rev = repo['rev'].removeprefix('v')
-                    versions[dep] = cleaned_rev
+                    versions[dep] = _version(repo)
 
     updated = []
     for repo in loaded['repos']:
